@@ -1,0 +1,38 @@
+.tasks {
+    margin: 20px 0;    
+}
+.task {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0 15px;
+    border: 1px solid;
+    width: 50%;
+    padding: 10px;
+}
+
+.form {
+    display: flex;
+}
+.form input{
+    border: none;
+}
+.form input:focus{
+    outline: none;
+}
+.bold {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.edit-form {
+    position: absolute;
+    top: 0;
+    left: 800px;
+    height: 300px;
+    width: 540px;
+    border: 1px solid black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
