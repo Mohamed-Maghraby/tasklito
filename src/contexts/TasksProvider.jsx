@@ -27,16 +27,10 @@ function TasksProvider({ children }) {
   async function addTasks(task) {
     if (task.title === '') return
     setTasks([...tasks, task])
+    localStorage.setItem('Tasks', JSON.stringify(tasks))
     console.log(task);
-    // try {
-    //     const res = await fetch(BASE_URL)
-    //     const data = await res.json()
-    //     setTasks(data)
-    //     console.log(data);
-    // } catch (error) {
-    //     throw new Error("Erro fetch tasks")
-    // }
   }
+  
   function editTask(updatedTask) {
     setTasks(
       tasks.map((task) => {

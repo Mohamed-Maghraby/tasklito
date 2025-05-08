@@ -1,11 +1,13 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { useTasks } from '../contexts/TasksProvider'
+import useOutsideClick from '../hooks/useOutsideClick '
 
 
-function EditTask({ task, setIsEdit }) {
+function EditTask({ task, setIsVisable }) {
     const [updatedTask, setUpdatedTask] = useState(task)
     const { editTask } = useTasks()
     const editFormRef = useRef()
+    useOutsideClick(editFormRef, ()=> setIsVisable(false))
 
     //Just changes input vlaue onChange
     function handleChange(e) {
@@ -18,14 +20,20 @@ function EditTask({ task, setIsEdit }) {
     function handleSubmit(e) {
         e.preventDefault()
         editTask(updatedTask)
+        setIsVisable(false)
+
+    }
+    function handleClose () {
+        setIsVisable(false)
     }
 
     useEffect(() => {
+        console.log("EdidTask is filled with the current task");
         setUpdatedTask(task);
     }, [task]);
 
     return (
-        <form ref={editFormRef} className={'edit-form'} onSubmit={handleSubmit} onClick={(e) => e.stopPropagation()}>
+        <form ref={editFormRef} className={'edit-form'} onSubmit={handleSubmit}>
             <input
                 name="title"
                 value={updatedTask.title}
@@ -44,7 +52,8 @@ function EditTask({ task, setIsEdit }) {
                 onChange={handleChange}
                 placeholder="Category"
             />
-            <button type="submit">Edit</button>
+            <button type="submit">Done</button>
+            <button onClick={handleClose}>Close</button>
         </form>
     )
 }

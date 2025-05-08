@@ -1,16 +1,17 @@
-import React, { useEffect, useRef, useState } from "react";
-import EditTask from "./EditTask";
-import TaskForm from "./TaskFrom";
+import React, {useEffect } from "react";
 import { useTasks } from "../contexts/TasksProvider";
 
 function Task({ task, setCurrentTask, setIsVisable}) {
-  const { title, describtion, category, dateCreated, id } = task;
+  const { title, describtion, category, dateCreated, dueto } = task;
   const { deleteTask } = useTasks();
+  const dateObject = new Date(dueto)
 
   function handleEdit(e) {
-    // setIsVisable(true)
+    e.stopPropagation()
     setCurrentTask(task)
+    setIsVisable(true)
   }
+
 function handleDelete() {
   deleteTask(task.id);
 }
@@ -20,6 +21,7 @@ return (
     <p>{describtion}</p>
     <p>{dateCreated}</p>
     <p>{category}</p>
+    <p>{dateObject.toLocaleDateString()}</p>
     <button onClick={handleDelete}>Delte</button>
   </div>
 );
