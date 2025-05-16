@@ -2,35 +2,53 @@ import { createContext, useContext, useEffect, useState } from "react";
 
 const TasksContext = createContext()
 
-import React from 'react'
-
 function TasksProvider({ children }) {
   const [tasks, setTasks] = useState([])
-
+  const [loadedFromStorage, setLoadedFromStorage] = useState(false);
 
   const BASE_URL = 'http://localhost:9000/tasks'
 
+  async function getTasks() {
+    try {
+      const res = await fetch(BASE_URL)
+      const data = await res.json()
+      setTasks(data)
+      console.log(data);
+    } catch (error) {
+      throw new Error("Erro fetch tasks")
+    }
+  }
+
   useEffect(() => {
-    async function getTasks() {
+    const localStorageTasks = localStorage.getItem('Tasks');
+    if (localStorageTasks) {
+      console.log("Exists");
       try {
-        const res = await fetch(BASE_URL)
-        const data = await res.json()
-        setTasks(data)
-        console.log(data);
+        const parsedTasks = JSON.parse(localStorageTasks);
+        if (Array.isArray(parsedTasks)) {
+          setTasks(parsedTasks); // replace, don't append
+        }
       } catch (error) {
-        throw new Error("Erro fetch tasks")
+        console.error('Failed to parse tasks from localStorage:', error);
       }
     }
-    getTasks()
-  }, [])
+    setLoadedFromStorage(true); // mark loading complete
 
-  async function addTasks(task) {
-    if (task.title === '') return
-    setTasks([...tasks, task])
-    localStorage.setItem('Tasks', JSON.stringify(tasks))
+  }, []);
+
+  useEffect(() => {
+    if (loadedFromStorage) {
+      localStorage.setItem('Tasks', JSON.stringify(tasks));
+    }
+  }, [tasks, loadedFromStorage]);
+
+
+  function addTasks(task) {
+    if (!task.title) return;
+    setTasks((prev) => [...prev, task]); //use updater function to avoid stale state
     console.log(task);
   }
-  
+
   function editTask(updatedTask) {
     setTasks(
       tasks.map((task) => {
@@ -42,8 +60,17 @@ function TasksProvider({ children }) {
     );
     console.log(updatedTask);
   }
-  function deleteTask (id) {
-    setTasks((prev)=> prev.filter((t)=>t.id !== id))
+
+  function deleteTask(id) {
+    setTasks((prev) => prev.filter((t) => t.id !== id))
+  }
+
+  function completedToggle(task) {
+    setTasks((prev) =>
+      prev.map((t) =>
+        t.id === task.id ? { ...t, completed: !t.completed } : t
+      )
+    );
   }
 
 
@@ -51,8 +78,9 @@ function TasksProvider({ children }) {
     <TasksContext.Provider value={{
       tasks,
       addTasks,
-      editTask, 
+      editTask,
       deleteTask,
+      completedToggle,
     }}>
       {children}
     </TasksContext.Provider>

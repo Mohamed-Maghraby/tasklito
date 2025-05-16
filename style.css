@@ -1,0 +1,17 @@
+.calendar-icon {
+    width: 0.8rem !important;
+    padding-top: 13px !important;
+    fill: #34d399 !important;
+}
+
+.react-datepicker-wrapper {
+    width: 100%;
+}
+
+.react-datepicker__view-calendar-icon input {
+    padding: 10px 16px 10px 25px !important;
+}
+
+.home .edit-form .react-datepicker__view-calendar-icon input {
+    padding: 10px 6px 10px 26px !important;
+}

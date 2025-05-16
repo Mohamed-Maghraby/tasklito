@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import { useEffect, useReducer, useState } from 'react'
 import Task from './Task';
 import { useTasks } from '../contexts/TasksProvider';
 import EditTask from './EditTask';
@@ -12,8 +12,12 @@ function TaskList() {
     console.log("currentTask Updated");
   }, [currentTask]);
 
+  useEffect(() => {
+    console.log("task render");
+  });
+
   return (
-    <div className='tasks'>
+    <div className='tasks h-110 overflow-y-auto bg-white  rounded-md my-6'>
       {
         tasks.map((task, index) => {
           return <Task task={task} key={index} setCurrentTask={setCurrentTask} setIsVisable={setIsVisable} currentTaskId={currentTask.id}></Task>
