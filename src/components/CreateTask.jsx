@@ -1,11 +1,13 @@
 import { useCallback, useState } from "react";
 import { useTasks } from "../contexts/TasksProvider";
 import DateInput from "./DateInput";
+import { v4 as uuidv4 } from 'uuid';
+import useRender from '../hooks/useRender'
 
 const init = {
-  id: parseInt(Math.random() * 100000),
+  id: uuidv4(),
   title: "",
-  describtion: "",
+  description: "",
   dateCreated: new Date().toLocaleDateString(),
   category: "",
   dueto: new Date(),
@@ -13,50 +15,53 @@ const init = {
 };
 
 function CreateTask() {
+
   const { addTasks } = useTasks();
   const [newTask, setNewTask] = useState(init);
 
-  function handleOnChange(e) {
+  useRender('create task', 'console')
+
+  function handleInputOnChange(e) {
     setNewTask({ ...newTask, [e.target.name]: e.target.value });
   }
-  const handleDateChange = useCallback((date) => {
+  const handleDateOnChange = useCallback((date) => {
     setNewTask((prev) => ({ ...prev, dueto: date }));
   }, []);
 
-  function handeSubmit(e) {
+  function handelSubmit(e) {
     e.preventDefault();
     addTasks(newTask);
     setNewTask({
       ...init,
-      id: parseInt(Math.random() * 100000),
+      id: uuidv4(),
       dateCreated: new Date().toLocaleDateString(),
     });
   }
 
   return (
-    <form onSubmit={handeSubmit} className="create-from">
+    <form onSubmit={handelSubmit} className="create-from">
       <input
         value={newTask.title}
         className="input-primary"
         name="title"
-        onChange={handleOnChange}
+        onChange={handleInputOnChange}
         placeholder="title"
       />
       <input
-        value={newTask.describtion}
+        value={newTask.description}
         className="input-primary"
-        name="describtion"
-        onChange={handleOnChange}
-        placeholder="describtion"
+        name="description"
+        onChange={handleInputOnChange}
+        placeholder="description"
       />
       <input
         value={newTask.category}
         className="input-primary"
         name="category"
-        onChange={handleOnChange}
+        onChange={handleInputOnChange}
         placeholder="category"
       />
-      <DateInput dueto={newTask.dueto} onChange={handleDateChange} inputClass="input-primary"></DateInput>
+      <DateInput dueto={newTask.dueto} onChange={handleDateOnChange} inputClass="input-primary"></DateInput>
       <button type="submit" className="button-primary">Done</button>
     </form>
   );

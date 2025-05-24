@@ -1,11 +1,20 @@
-import { useEffect, useState } from "react";
+/**
+ * In this version we do not need to use React.memo to prevent Task from rendering when isVisible change.
+ * isVisible state is moved from parent to child, and rendering EditTask conditionally, now we saved
+ * huge time and performance we do not have a stat the holds the current task and we do not pass setters to 
+ * children, some time creating a component with local state and using conditional rendering is the best solution
+ */
+
+import React, { useEffect, useState } from "react";
 import { useTasks } from "../contexts/TasksProvider";
 import { Trash } from "lucide-react";
+import EditTask from "./EditTask";
 
-function Task({ task, setCurrentTask, setIsVisable }) {
-  const { title, describtion, category, dateCreated, dueto, completed } = task;
+function Task({ task }) {
+  const { title, category, dueto, completed } = task;
   const { deleteTask, completedToggle } = useTasks();
   const [isHovered, setIsHovered] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
   const dateObject = new Date(dueto);
   const formatted = dateObject
@@ -19,20 +28,17 @@ function Task({ task, setCurrentTask, setIsVisable }) {
     })
     .replace("at", ","); // Remove comma after date
 
-        
-    useEffect(() => {
-        console.log("tasks render");
-    });
-
+  useEffect(() => {
+    console.log("tasks render");
+  });
 
   function handleEdit(e) {
     e.stopPropagation();
-    setCurrentTask(task);
-    setIsVisable(true);
+    setIsVisible(true);
   }
 
   function handleDelete() {
-    setIsVisable(false);
+    setIsVisible(false);
     deleteTask(task.id);
   }
 
@@ -61,13 +67,14 @@ function Task({ task, setCurrentTask, setIsVisable }) {
         <Trash
           className="ml-12 cursor-pointer"
           onClick={handleDelete}
-          onMouseEnter={()=>setIsHovered(true)}
-          onMouseLeave={()=>setIsHovered(false)}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
           size={20}
           strokeWidth={1.5}
           stroke={`${isHovered ? 'red' : 'black'}`}
         />
       </div>
+      {isVisible && <EditTask task={task} setIsVisible={setIsVisible}></EditTask>}
     </div>
   );
 }

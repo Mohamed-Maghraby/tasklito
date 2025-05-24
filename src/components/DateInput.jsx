@@ -1,7 +1,7 @@
 import React from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-const DateInput = React.memo(({dueto, onChange, setIsVisable, inputClass})=> {
+const DateInput = React.memo(({dueto, onChange, setIsVisible, inputClass})=> {
   return (
     <DatePicker 
     className={inputClass}

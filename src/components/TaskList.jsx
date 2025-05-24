@@ -1,29 +1,50 @@
-import { useEffect, useReducer, useState } from 'react'
+import { useEffect, useState } from 'react'
 import Task from './Task';
 import { useTasks } from '../contexts/TasksProvider';
-import EditTask from './EditTask';
 function TaskList() {
   
-  const { tasks } = useTasks()
-  const [currentTask, setCurrentTask] = useState({})
-  const [isVisable, setIsVisable] = useState(false);
-  
-  useEffect(() => {
-    console.log("currentTask Updated");
-  }, [currentTask]);
+  const { tasks, tasksFilterOption } = useTasks()
 
+  
+  
   useEffect(() => {
     console.log("task render");
   });
 
+
   return (
-    <div className='tasks h-110 overflow-y-auto bg-white  rounded-md my-6'>
-      {
+    <div className='tasks h-110 overflow-y-auto bg-white rounded-md my-1'>
+      {/* {
         tasks.map((task, index) => {
-          return <Task task={task} key={index} setCurrentTask={setCurrentTask} setIsVisable={setIsVisable} currentTaskId={currentTask.id}></Task>
+          return <Task task={task} key={index}></Task>
+        })
+      }  */}
+
+      {
+        tasksFilterOption === 'all' &&
+        tasks.filter((t)=>{
+          return t
+        }).map((t)=>{
+          return <Task task={t} key={t.id}></Task>
         })
       }
-    {isVisable && <EditTask task={currentTask} setIsVisable={setIsVisable}></EditTask>}
+      {
+        tasksFilterOption === 'completed' &&
+        tasks.filter((t)=>{
+          return t.completed
+        }).map((t)=>{
+          return <Task task={t} key={t.id}></Task>
+        })
+      }
+      {
+        tasksFilterOption === 'non_completed' &&
+        tasks.filter((t)=>{
+          return !t.completed
+        }).map((t)=>{
+          return <Task task={t} key={t.id}></Task>
+        })
+      }
+
     </div>
   )
 }

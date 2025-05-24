@@ -1,31 +1,28 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 const TasksContext = createContext()
 
 function TasksProvider({ children }) {
   const [tasks, setTasks] = useState([])
+  const [tasksFilterOption, setTasksFilterOption] = useState('')
   const [loadedFromStorage, setLoadedFromStorage] = useState(false);
 
   const BASE_URL = 'http://localhost:9000/tasks'
 
-  async function getTasks() {
-    try {
-      const res = await fetch(BASE_URL)
-      const data = await res.json()
-      setTasks(data)
-      console.log(data);
-    } catch (error) {
-      throw new Error("Erro fetch tasks")
-    }
-  }
-
   useEffect(() => {
+    /*
+      Check if the tasks exists or not.
+      If some interruption happens on mounting useEffect may not be able to retrieve tasks.
+      Tasks may be replaced with the init value -> {} when we try to set the tasks in the effect below.
+      If the below effect runs before this which may happen data will be lost.
+     */
     const localStorageTasks = localStorage.getItem('Tasks');
     if (localStorageTasks) {
-      console.log("Exists");
       try {
         const parsedTasks = JSON.parse(localStorageTasks);
+        //check the type of the tasks (must be array)
         if (Array.isArray(parsedTasks)) {
+          console.log("local get");
           setTasks(parsedTasks); // replace, don't append
         }
       } catch (error) {
@@ -36,8 +33,10 @@ function TasksProvider({ children }) {
 
   }, []);
 
+  //Warning: this effect will render whenever tasks changes, might be a performance issue
   useEffect(() => {
     if (loadedFromStorage) {
+      console.log("Local Set");
       localStorage.setItem('Tasks', JSON.stringify(tasks));
     }
   }, [tasks, loadedFromStorage]);
@@ -55,7 +54,7 @@ function TasksProvider({ children }) {
         if (task.id === updatedTask.id) {
           return { ...task, ...updatedTask }; // spread to update fields
         }
-        return task; // don't forget this!
+        return task; // always return 
       })
     );
     console.log(updatedTask);
@@ -73,14 +72,19 @@ function TasksProvider({ children }) {
     );
   }
 
+  function filterTasks (option) {
+    setTasksFilterOption(option)
+  }
 
   return (
     <TasksContext.Provider value={{
       tasks,
+      tasksFilterOption,
       addTasks,
       editTask,
       deleteTask,
       completedToggle,
+      filterTasks,
     }}>
       {children}
     </TasksContext.Provider>
@@ -90,7 +94,7 @@ function TasksProvider({ children }) {
 function useTasks() {
   const context = useContext(TasksContext)
   if (context === undefined) {
-    console.error("TaskContext is used outsie TaskProvider")
+    console.error("TaskContext is used outside TaskProvider")
     return;
   }
   return context;

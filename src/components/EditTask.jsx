@@ -3,20 +3,23 @@ import { useTasks } from "../contexts/TasksProvider";
 import useOutsideClick from "../hooks/useOutsideClick ";
 import DateInput from "./DateInput";
 import { X } from "lucide-react";
+import useRender from "../hooks/useRender";
 
-function EditTask({ task, setIsVisable }) {
+function EditTask({ task, setIsVisible }) {
     const [updatedTask, setUpdatedTask] = useState(task);
     const [isHovered, setIsHovered] = useState(false);
     const { editTask } = useTasks();
     const editFormRef = useRef();
-    useOutsideClick(editFormRef, () => setIsVisable(false));
 
-    //Just changes input vlaue onChange
+    useOutsideClick(editFormRef, () => setIsVisible(false));
+
+    //Just changes input value onChange
     function handleChange(e) {
-        //e.target is an object can be destructuered, dynamically update state based on input name att
+        //e.target is an object can be destructured, dynamically update state based on input name att
         const { name, value } = e.target;
         setUpdatedTask((prev) => ({ ...prev, [name]: value }));
     }
+
     const handleDateChange = useCallback((date) => {
         setUpdatedTask((prev) => ({ ...prev, dueto: date }));
     }, []);
@@ -25,10 +28,11 @@ function EditTask({ task, setIsVisable }) {
     function handleSubmit(e) {
         e.preventDefault();
         editTask(updatedTask);
-        setIsVisable(false);
+        setIsVisible(false);
     }
+
     function handleClose() {
-        setIsVisable(false);
+        setIsVisible(false);
     }
 
     useEffect(() => {
@@ -59,7 +63,7 @@ function EditTask({ task, setIsVisable }) {
                 />
                 <label className="text-sm text-neutral-700" htmlFor="describtion">describtion</label>
                 <textarea
-                    className="input-primary min-w-full max-w-full" 
+                    className="input-primary min-w-full max-w-full"
                     name="describtion"
                     value={updatedTask.describtion}
                     onChange={handleChange}
@@ -73,17 +77,14 @@ function EditTask({ task, setIsVisable }) {
                     onChange={handleChange}
                     placeholder="Category"
                 />
-                 <label className="text-sm text-neutral-700" htmlFor="DatePicker">due to</label>
+                <label className="text-sm text-neutral-700" htmlFor="DatePicker">due to</label>
                 <DateInput
                     dueto={updatedTask.dueto}
                     onChange={handleDateChange}
-                    setIsVisable={setIsVisable}
+                    setIsVisible={setIsVisible}
                     inputClass={"input-primary w-full"}
                 ></DateInput>
-
-                <button type="submit" className="button-primary w-full">
-                    Done
-                </button>
+                <button type="submit" className="button-primary w-full">Done</button>
             </form>
         </div>
     );

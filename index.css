@@ -15,11 +15,11 @@
 
 @layer components {
     .button-primary {
-        @apply bg-white text-emerald-600 font-semibold px-4 py-2.5 mt-1 mb-3 rounded-sm border-1 cursor-pointer hover:bg-emerald-600 hover:text-white hover:border-white;
+        @apply bg-white text-emerald-600 font-semibold px-4 py-2.5 my-2 rounded-sm border-1 cursor-pointer hover:bg-emerald-600 hover:text-white hover:border-white;
     }
 
     .input-primary {
-        @apply box-border px-4 py-2.5 mb-3 mt-1 rounded-sm border-1 focus:outline-emerald-500;
+        @apply box-border px-4 py-2.5 my-2 rounded-sm border-1 focus:outline-emerald-500;
     }
 
     .section-margin {
