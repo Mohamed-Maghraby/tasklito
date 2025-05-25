@@ -16,8 +16,8 @@ function Home() {
         <p className='mt-0 mb-2'>Organize your daily tasks with this amazing react-based to-do app</p>
         <TasksProvider>
           <CreateTask></CreateTask>
+          <DisplayTasksCounts></DisplayTasksCounts>
           <TasksFiltersOptionProvider>
-            <DisplayTasksCounts></DisplayTasksCounts>
             <TasksFilter></TasksFilter>
             <TaskList></TaskList>
           </TasksFiltersOptionProvider>

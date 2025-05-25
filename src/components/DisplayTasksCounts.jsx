@@ -1,13 +1,20 @@
-import React from 'react'
+import React, { memo, useMemo } from 'react'
 import { useTasksValueContext } from '../contexts/TasksProvider'
 import useRender from '../hooks/useRender'
 
-function DisplayTasksCounts() {
-    const {tasksLength} = useTasksValueContext()
+const DisplayTasksCounts = memo(()=> {
+    const {taskLength} = useTasksValueContext()
     useRender('DisplayTasksCounts', 'console')
   return (
-    <div className='text-sm text-neutral-700 font-bold'>You got {tasksLength}</div>
+    <div className='text-sm text-neutral-700 font-bold'>You got {taskLength}</div>
   )
-}
+})
+// function DisplayTasksCounts() {
+//     const {taskLengthOPT} = useTasksValueContext()
+//     useRender('DisplayTasksCounts', 'console')
+//   return (
+//     <div className='text-sm text-neutral-700 font-bold'>You got {taskLengthOPT()}</div>
+//   )
+// }
 
 export default DisplayTasksCounts

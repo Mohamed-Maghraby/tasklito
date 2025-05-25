@@ -15,6 +15,11 @@
  * Goal: 
  * when any fn gets executed like toggle or edit, subscribed components that don't get effected should 
  * be optimized 
+ * 
+ * 
+ * the problem is when tasks changes from anywhere inside the context, it will a new object instance will
+ * passed to provider {tasks, taskLength} {tasksApi}, causing the whole consumers to re-render, regardless
+ * of consumers being memoized or you use callbacks or not, a new reference is created
  */
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
@@ -24,7 +29,6 @@ const TasksValueContext = createContext()
 function TasksProvider({ children }) {
   const [tasks, setTasks] = useState([])
   const [loadedFromStorage, setLoadedFromStorage] = useState(false);
-  const tasksLength = tasks.length 
 
 
   useEffect(() => {
@@ -60,7 +64,6 @@ function TasksProvider({ children }) {
   }, [tasks, loadedFromStorage]);
 
 
-  const tasksApi = useMemo(() => {
 
     function addTasks (task) {
       if (!task.title) return;
@@ -93,14 +96,17 @@ function TasksProvider({ children }) {
 
     }
 
-    return { addTasks, editTask, deleteTask, completedToggle }
+    const tasksApi = useMemo(()=>{
+      return {addTasks, deleteTask, editTask, completedToggle}
+    },[])
 
-  }, [tasks])
+  
+  const taskLength = useMemo(() => {tasks.length}, [tasks])
 
   
   return (
     <TasksAPIContext.Provider value={{tasksApi}}>
-      <TasksValueContext.Provider value={{tasks, tasksLength}}>
+      <TasksValueContext.Provider value={{tasks, taskLength}}>
         {children}
       </TasksValueContext.Provider>
     </TasksAPIContext.Provider>
