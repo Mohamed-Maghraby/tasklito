@@ -1,3 +1,10 @@
+/**
+ * Current problem with context: when state changes here all components that consume the context re-render
+ * Ex: createTask component consume the context to access addTask, when state updates in re-renders 
+ * unnecessary, it should only re-renders when its local state changes or create a new task, 
+ * but when filter options changes it re-renders.
+ * Consider more state unrelated to tasks updated happen here it will cause waste renders.  
+ */
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 const TasksContext = createContext()
@@ -7,7 +14,6 @@ function TasksProvider({ children }) {
   const [tasksFilterOption, setTasksFilterOption] = useState('')
   const [loadedFromStorage, setLoadedFromStorage] = useState(false);
 
-  const BASE_URL = 'http://localhost:9000/tasks'
 
   useEffect(() => {
     /*
