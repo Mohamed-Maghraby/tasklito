@@ -6,13 +6,13 @@
  */
 
 import React, { useEffect, useState } from "react";
-import { useTasks } from "../contexts/TasksProvider";
+import { useTasksAPIContext } from "../contexts/TasksProvider";
 import { Trash } from "lucide-react";
 import EditTask from "./EditTask";
 
 function Task({ task }) {
   const { title, category, dueto, completed } = task;
-  const { deleteTask, completedToggle } = useTasks();
+  const { tasksApi:{deleteTask, completedToggle} } = useTasksAPIContext();
   const [isHovered, setIsHovered] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
 

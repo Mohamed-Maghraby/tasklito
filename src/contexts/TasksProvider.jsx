@@ -4,15 +4,27 @@
  * unnecessary, it should only re-renders when its local state changes or create a new task, 
  * but when filter options changes it re-renders.
  * Consider more state unrelated to tasks updated happen here it will cause waste renders.  
+ * 
+ * Updates: 
+ * Created a separate context and provider for filter options, components that does nopt use the options
+ * provider won't get re-render. 
+ * unnecessary re-renders for components like DisplayTasksCounts and createTasks, when fn like toggle or edit
+ * gets executed, that's because the provider gets re-render and all consumers do so.
+ * Even when provider got separated to values, and api that didn't solve the issue.
+ * 
+ * Goal: 
+ * when any fn gets executed like toggle or edit, subscribed components that don't get effected should 
+ * be optimized 
  */
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
-const TasksContext = createContext()
+const TasksAPIContext = createContext()
+const TasksValueContext = createContext()
 
 function TasksProvider({ children }) {
   const [tasks, setTasks] = useState([])
-  const [tasksFilterOption, setTasksFilterOption] = useState('')
   const [loadedFromStorage, setLoadedFromStorage] = useState(false);
+  const tasksLength = tasks.length 
 
 
   useEffect(() => {
@@ -48,57 +60,63 @@ function TasksProvider({ children }) {
   }, [tasks, loadedFromStorage]);
 
 
-  function addTasks(task) {
-    if (!task.title) return;
-    setTasks((prev) => [...prev, task]); //use updater function to avoid stale state
-    console.log(task);
-  }
+  const tasksApi = useMemo(() => {
 
-  function editTask(updatedTask) {
-    setTasks(
-      tasks.map((task) => {
-        if (task.id === updatedTask.id) {
-          return { ...task, ...updatedTask }; // spread to update fields
-        }
-        return task; // always return 
-      })
-    );
-    console.log(updatedTask);
-  }
+    function addTasks (task) {
+      if (!task.title) return;
+      setTasks((prev) => [...prev, task]); //use updater function to avoid stale state
+      console.log(task);
+    }
 
-  function deleteTask(id) {
-    setTasks((prev) => prev.filter((t) => t.id !== id))
-  }
+    function editTask(updatedTask) {
+      setTasks(
+        tasks.map((task) => {
+          if (task.id === updatedTask.id) {
+            return { ...task, ...updatedTask }; // spread to update fields
+          }
+          return task; // always return 
+        })
+      );
+      console.log(updatedTask);
+    }
 
-  function completedToggle(task) {
-    setTasks((prev) =>
-      prev.map((t) =>
-        t.id === task.id ? { ...t, completed: !t.completed } : t
-      )
-    );
-  }
+    function deleteTask(id) {
+      setTasks((prev) => prev.filter((t) => t.id !== id))
+    }
 
-  function filterTasks (option) {
-    setTasksFilterOption(option)
-  }
+    function completedToggle(task) {
+      setTasks((prev) =>
+        prev.map((t) =>
+          t.id === task.id ? { ...t, completed: !t.completed } : t
+        )
+      );
 
+    }
+
+    return { addTasks, editTask, deleteTask, completedToggle }
+
+  }, [tasks])
+
+  
   return (
-    <TasksContext.Provider value={{
-      tasks,
-      tasksFilterOption,
-      addTasks,
-      editTask,
-      deleteTask,
-      completedToggle,
-      filterTasks,
-    }}>
-      {children}
-    </TasksContext.Provider>
+    <TasksAPIContext.Provider value={{tasksApi}}>
+      <TasksValueContext.Provider value={{tasks, tasksLength}}>
+        {children}
+      </TasksValueContext.Provider>
+    </TasksAPIContext.Provider>
   )
 }
 
-function useTasks() {
-  const context = useContext(TasksContext)
+function useTasksAPIContext() {
+  const context = useContext(TasksAPIContext)
+  if (context === undefined) {
+    console.error("TaskContext is used outside TaskProvider")
+    return;
+  }
+  return context;
+}
+function useTasksValueContext() {
+  const context = useContext(TasksValueContext)
   if (context === undefined) {
     console.error("TaskContext is used outside TaskProvider")
     return;
@@ -106,4 +124,5 @@ function useTasks() {
   return context;
 }
 
-export { TasksProvider, useTasks } 
+
+export { TasksProvider, useTasksAPIContext, useTasksValueContext } 

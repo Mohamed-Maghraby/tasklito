@@ -1,7 +1,13 @@
+/*Components*/
 import TaskList from '../components/TaskList'
-import { TasksProvider } from '../contexts/TasksProvider'
 import CreateTask from '../components/CreateTask'
 import TasksFilter from '../components/TasksFilter'
+import DisplayTasksCounts from '../components/DisplayTasksCounts'
+
+/*context*/
+import { TasksProvider } from '../contexts/TasksProvider'
+import { TasksFiltersOptionProvider } from '../contexts/TasksFiltersOptionProvider'
+
 function Home() {
   return (
     <div className='home flex flex-col items-center section-margin relative'>
@@ -10,8 +16,11 @@ function Home() {
         <p className='mt-0 mb-2'>Organize your daily tasks with this amazing react-based to-do app</p>
         <TasksProvider>
           <CreateTask></CreateTask>
-          <TasksFilter></TasksFilter>
-          <TaskList></TaskList>
+          <TasksFiltersOptionProvider>
+            <DisplayTasksCounts></DisplayTasksCounts>
+            <TasksFilter></TasksFilter>
+            <TaskList></TaskList>
+          </TasksFiltersOptionProvider>
         </TasksProvider>
       </div> 
     </div>

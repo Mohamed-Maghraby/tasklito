@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
-import { useTasks } from '../contexts/TasksProvider'
+import { useTasksFiltersOptionContext } from '../contexts/TasksFiltersOptionProvider';
 
 function TasksFilter() {
-    const { filterTasks } = useTasks()
+    const { filterTasks } = useTasksFiltersOptionContext()
+
     const [option, setOption] = useState('all')
     useEffect(()=>{
         filterTasks(option)

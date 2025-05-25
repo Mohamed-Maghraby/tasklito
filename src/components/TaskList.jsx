@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react'
 import Task from './Task';
-import { useTasks } from '../contexts/TasksProvider';
+import { useTasksValueContext } from '../contexts/TasksProvider';
+import { useTasksFiltersOptionContext } from '../contexts/TasksFiltersOptionProvider';
 function TaskList() {
-  
-  const { tasks, tasksFilterOption } = useTasks()
 
-  
-  
+  const { tasks } = useTasksValueContext()
+  const { tasksFilterOption } = useTasksFiltersOptionContext()
+
+
   useEffect(() => {
     console.log("task render");
   });
-
 
   return (
     <div className='tasks h-110 overflow-y-auto bg-white rounded-md my-1'>

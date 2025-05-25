@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
-import { useTasks } from "../contexts/TasksProvider";
+import { useTasksAPIContext } from "../contexts/TasksProvider";
 import useOutsideClick from "../hooks/useOutsideClick ";
 import DateInput from "./DateInput";
 import { X } from "lucide-react";
@@ -8,7 +8,7 @@ import useRender from "../hooks/useRender";
 function EditTask({ task, setIsVisible }) {
     const [updatedTask, setUpdatedTask] = useState(task);
     const [isHovered, setIsHovered] = useState(false);
-    const { editTask } = useTasks();
+    const { tasksApi:{editTask} } = useTasksAPIContext();
     const editFormRef = useRef();
 
     useOutsideClick(editFormRef, () => setIsVisible(false));
