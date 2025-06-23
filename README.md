@@ -1,6 +1,6 @@
-# Project Title
+# Tasklito
 
-Tasklito
+A to-do list web app using react.js
 
 ## Description
 

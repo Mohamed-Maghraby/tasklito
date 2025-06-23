@@ -36,7 +36,6 @@ function EditTask({ task, setIsVisible }) {
     }
 
     useEffect(() => {
-        console.log("EdidTask is filled with the current task");
         setUpdatedTask(task);
     }, [task]);
 
