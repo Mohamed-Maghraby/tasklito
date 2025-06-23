@@ -76,40 +76,37 @@ function TasksProvider({ children }) {
   }, [tasks, loadedFromStorage]);
 
 
+  const addTasks = useCallback( (task)=> {
+    if (!task.title) return;
+    setTasks((prev) => [...prev, task]); //use updater function to avoid stale state
+    console.log(task);
+  },[])
 
-    const addTasks = useCallback( (task)=> {
-      if (!task.title) return;
-      setTasks((prev) => [...prev, task]); //use updater function to avoid stale state
-      console.log(task);
-    },[])
+  const editTask = useCallback((updatedTask) => {
+    setTasks((prev) =>
+      prev.map((task) =>
+        task.id === updatedTask.id ? { ...task, ...updatedTask } : task
+      )
+    );
+    console.log(updatedTask);
+  }, []);
 
-    const editTask = useCallback((updatedTask)=> {
-      setTasks(
-        tasks.map((task) => {
-          if (task.id === updatedTask.id) {
-            return { ...task, ...updatedTask }; // spread to update fields
-          }
-          return task; // always return 
-        })
-      );
-      console.log(updatedTask);
-    },[tasks])
 
-    const deleteTask = useCallback((id)=> {
-      setTasks((prev) => prev.filter((t) => t.id !== id))
-    },[tasks])
+  const deleteTask = useCallback((id)=> {
+    setTasks((prev) => prev.filter((t) => t.id !== id))
+  },[tasks])
 
-    const completedToggle = useCallback((task)=> {
-      setTasks((prev) =>
-        prev.map((t) =>
-          t.id === task.id ? { ...t, completed: !t.completed } : t
-        )
-      );
-    },[tasks])
+  const completedToggle = useCallback((task)=> {
+    setTasks((prev) =>
+      prev.map((t) =>
+        t.id === task.id ? { ...t, completed: !t.completed } : t
+      )
+    );
+  },[tasks])
 
-    const tasksApi = useMemo(()=>{
-      return {addTasks, deleteTask, editTask, completedToggle}
-    },[])
+  const tasksApi = useMemo(()=>{
+    return {addTasks, deleteTask, editTask, completedToggle}
+  },[])
 
   const  taskLength = tasks.length
   return (

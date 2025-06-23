@@ -61,11 +61,11 @@ function EditTask({ task, setIsVisible }) {
                     onChange={handleChange}
                     placeholder="Title"
                 />
-                <label className="text-sm text-neutral-700" htmlFor="describtion">describtion</label>
+                <label className="text-sm text-neutral-700" htmlFor="description">description</label>
                 <textarea
                     className="input-primary min-w-full max-w-full"
-                    name="describtion"
-                    value={updatedTask.describtion}
+                    name="description"
+                    value={updatedTask.description}
                     onChange={handleChange}
                     placeholder="Description"
                 />
