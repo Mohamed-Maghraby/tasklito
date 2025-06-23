@@ -6,7 +6,7 @@ const DisplayTasksCounts = memo(()=> {
     const {taskLength} = useTaskLength()
     useRender('DisplayTasksCounts', 'console')
   return (
-    <div className='text-sm text-neutral-700 font-bold'>You got {taskLength}</div>
+    <div className='text-xs text-neutral-700 font-semibold'>You got {taskLength} tasks</div>
   )
 })
 // function DisplayTasksCounts() {
