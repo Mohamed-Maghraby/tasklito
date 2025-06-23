@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { memo, useCallback, useMemo, useState } from "react";
 import { useTasksAPIContext } from "../contexts/TasksProvider";
 import DateInput from "./DateInput";
 import { v4 as uuidv4 } from 'uuid';
@@ -14,7 +14,7 @@ const init = {
   completed: false,
 };
 
-function CreateTask () {
+const CreateTask = memo(()=> {
 
   const { tasksApi:{addTasks} } = useTasksAPIContext();
   const [newTask, setNewTask] = useState(init);
@@ -66,6 +66,6 @@ function CreateTask () {
       <button type="submit" className="button-primary">Done</button>
     </form>
   );
-}
+})
 
 export default CreateTask;

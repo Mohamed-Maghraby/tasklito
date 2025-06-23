@@ -20,9 +20,21 @@
  * the problem is when tasks changes from anywhere inside the context, it will a new object instance will
  * passed to provider {tasks, taskLength} {tasksApi}, causing the whole consumers to re-render, regardless
  * of consumers being memoized or you use callbacks or not, a new reference is created
+ * 
+ * Final:
+ * No improvement can be done, as long as the values you use depend on tasks which is an array gets changed
+ * every time you make an action in the api, the consumers that depend pr even read the tasks will re-render
+ * that happens because we try to implement a context for high-velocity-data i.e data changes frequently 
+ * on every action, so the best solution here is to use something like context selector or zustand or any 
+ * state management library that gets around that.
+ * 
+ * Context can be used to mange global state that doesn't change often (dark, them config, ect..), or when
+ * your states inside the context are not bound together i.e an object of states like a form inputs values
+ * changing name won't affect country so in such an example you can improve context consumers with little 
+ * tricks so they not re-render unnecessarily 
  */
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
-
+import { TaskLengthProvider } from "./TaskLengthProvider";
 const TasksAPIContext = createContext()
 const TasksValueContext = createContext()
 
@@ -65,13 +77,13 @@ function TasksProvider({ children }) {
 
 
 
-    function addTasks (task) {
+    const addTasks = useCallback( (task)=> {
       if (!task.title) return;
       setTasks((prev) => [...prev, task]); //use updater function to avoid stale state
       console.log(task);
-    }
+    },[])
 
-    function editTask(updatedTask) {
+    const editTask = useCallback((updatedTask)=> {
       setTasks(
         tasks.map((task) => {
           if (task.id === updatedTask.id) {
@@ -81,33 +93,31 @@ function TasksProvider({ children }) {
         })
       );
       console.log(updatedTask);
-    }
+    },[tasks])
 
-    function deleteTask(id) {
+    const deleteTask = useCallback((id)=> {
       setTasks((prev) => prev.filter((t) => t.id !== id))
-    }
+    },[tasks])
 
-    function completedToggle(task) {
+    const completedToggle = useCallback((task)=> {
       setTasks((prev) =>
         prev.map((t) =>
           t.id === task.id ? { ...t, completed: !t.completed } : t
         )
       );
-
-    }
+    },[tasks])
 
     const tasksApi = useMemo(()=>{
       return {addTasks, deleteTask, editTask, completedToggle}
     },[])
 
-  
-  const taskLength = useMemo(() => {tasks.length}, [tasks])
-
-  
+  const  taskLength = tasks.length
   return (
     <TasksAPIContext.Provider value={{tasksApi}}>
-      <TasksValueContext.Provider value={{tasks, taskLength}}>
+      <TasksValueContext.Provider value={{tasks}}>
+        <TaskLengthProvider taskLength={{taskLength}}>
         {children}
+        </TaskLengthProvider>
       </TasksValueContext.Provider>
     </TasksAPIContext.Provider>
   )

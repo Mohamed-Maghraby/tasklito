@@ -1,9 +1,9 @@
 import React, { memo, useMemo } from 'react'
-import { useTasksValueContext } from '../contexts/TasksProvider'
 import useRender from '../hooks/useRender'
+import { useTaskLength } from '../contexts/TaskLengthProvider'
 
 const DisplayTasksCounts = memo(()=> {
-    const {taskLength} = useTasksValueContext()
+    const {taskLength} = useTaskLength()
     useRender('DisplayTasksCounts', 'console')
   return (
     <div className='text-sm text-neutral-700 font-bold'>You got {taskLength}</div>
