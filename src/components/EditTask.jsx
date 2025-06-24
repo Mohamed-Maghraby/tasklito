@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
-import { useTasksAPIContext } from "../contexts/TasksProvider";
+import { useTasksContext } from "../contexts/TasksProvider";
 import useOutsideClick from "../hooks/useOutsideClick ";
 import DateInput from "./DateInput";
 import { X } from "lucide-react";
@@ -8,7 +8,7 @@ import useRender from "../hooks/useRender";
 function EditTask({ task, setIsVisible }) {
     const [updatedTask, setUpdatedTask] = useState(task);
     const [isHovered, setIsHovered] = useState(false);
-    const { tasksApi:{editTask} } = useTasksAPIContext();
+    const { editTask } = useTasksContext();
     const editFormRef = useRef();
 
     useOutsideClick(editFormRef, () => setIsVisible(false));
@@ -43,6 +43,10 @@ function EditTask({ task, setIsVisible }) {
     useEffect(() => {
         setUpdatedTask(task);
     }, [task]);
+
+    useEffect(() => {
+        console.log("EditTask Render");
+    });
 
     return (
         <div className="absolute h-full w-full bg-white/30 backdrop-blur-[2px] top-0 left-0">

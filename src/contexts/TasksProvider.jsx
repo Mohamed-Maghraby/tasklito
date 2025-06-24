@@ -1,7 +1,7 @@
 /**
  * Current problem with context: when state changes here all components that consume the context re-render
- * Ex: createTask component consume the context to access addTask, when state updates in re-renders 
- * unnecessary, it should only re-renders when its local state changes or create a new task, 
+ * Ex: createTask component consume the context to access addTask, when state updates in re-renders
+ * unnecessary, it should only re-renders when its local state changes or create a new task,
  * but when filter options changes it re-renders.
  * Consider more states unrelated to tasks updated happen here it will cause waste renders.  
  * 
@@ -40,21 +40,19 @@
  * Considering the second issue in which components that uses derived values like "tasks.length" will face the same issue, 
  * as its gets computed from "tasks array" so it will get re-rendered when "tasks array changes 
  * 
- *Finally: Context can be used to mange global state that doesn't change often (dark, them config, ect..), or when
+ * Finally: Context can be used to mange global state that doesn't change often (dark, them config, ect..), or when
  * your states inside the context are not bound together i.e an object of states like a form inputs values
  * changing name won't affect country so in such an example you can improve context consumers with little 
  * tricks so they not re-render unnecessarily 
  * 
  */
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { createContext,useCallback,useContext,useEffect,useMemo,useState } from "react";
 import { TaskLengthProvider } from "./TaskLengthProvider";
-const TasksAPIContext = createContext()
-const TasksValueContext = createContext()
+const TasksContext = createContext();
 
 function TasksProvider({ children }) {
-  const [tasks, setTasks] = useState([])
+  const [tasks, setTasks] = useState([]);
   const [loadedFromStorage, setLoadedFromStorage] = useState(false);
-
 
   useEffect(() => {
     /*
@@ -63,7 +61,7 @@ function TasksProvider({ children }) {
       Tasks may be replaced with the init value -> {} when we try to set the tasks in the effect below.
       If the below effect runs before this which may happen data will be lost.
      */
-    const localStorageTasks = localStorage.getItem('Tasks');
+    const localStorageTasks = localStorage.getItem("Tasks");
     if (localStorageTasks) {
       try {
         const parsedTasks = JSON.parse(localStorageTasks);
@@ -73,27 +71,25 @@ function TasksProvider({ children }) {
           setTasks(parsedTasks); // replace, don't append
         }
       } catch (error) {
-        console.error('Failed to parse tasks from localStorage:', error);
+        console.error("Failed to parse tasks from localStorage:", error);
       }
     }
     setLoadedFromStorage(true); // mark loading complete
-
   }, []);
 
   //Warning: this effect will render whenever tasks changes, might be a performance issue
   useEffect(() => {
     if (loadedFromStorage) {
       console.log("Local Set");
-      localStorage.setItem('Tasks', JSON.stringify(tasks));
+      localStorage.setItem("Tasks", JSON.stringify(tasks));
     }
   }, [tasks, loadedFromStorage]);
 
-
-  const addTasks = useCallback( (task)=> {
+  const addTasks = useCallback((task) => {
     if (!task.title) return;
     setTasks((prev) => [...prev, task]); //use updater function to avoid stale state
     console.log(task);
-  },[])
+  }, []);
 
   const editTask = useCallback((updatedTask) => {
     setTasks((prev) =>
@@ -104,54 +100,45 @@ function TasksProvider({ children }) {
     console.log(updatedTask);
   }, []);
 
+  const deleteTask = useCallback(
+    (id) => {
+      setTasks((prev) => prev.filter((t) => t.id !== id));
+    },
+    [tasks]
+  );
 
-  const deleteTask = useCallback((id)=> {
-    setTasks((prev) => prev.filter((t) => t.id !== id))
-  },[tasks])
+  const completedToggle = useCallback(
+    (task) => {
+      setTasks((prev) =>
+        prev.map((t) =>
+          t.id === task.id ? { ...t, completed: !t.completed } : t
+        )
+      );
+    },
+    [tasks]
+  );
 
-  const completedToggle = useCallback((task)=> {
-    setTasks((prev) =>
-      prev.map((t) =>
-        t.id === task.id ? { ...t, completed: !t.completed } : t
-      )
-    );
-  },[tasks])
+  // const tasksValue = useMemo(() => {
+  //   return { addTasks, deleteTask, editTask, completedToggle };
+  // },[addTasks, deleteTask, editTask, completedToggle]);
 
-  // const tasksApi = useMemo(()=>{
-  //   return {addTasks, deleteTask, editTask, completedToggle}
-  // },[])
-  const tasksApi = {addTasks, deleteTask, editTask, completedToggle}
-  
-
-
-  const  taskLength = tasks.length
+  const taskLength = tasks.length;
   return (
-    <TasksAPIContext.Provider value={{tasksApi}}>
-      <TasksValueContext.Provider value={{tasks}}>
-        <TaskLengthProvider taskLength={{taskLength}}>
+    <TasksContext.Provider value={{ tasks, addTasks, deleteTask, editTask, completedToggle }}>
+      <TaskLengthProvider taskLength={{ taskLength }}>
         {children}
-        </TaskLengthProvider>
-      </TasksValueContext.Provider>
-    </TasksAPIContext.Provider>
-  )
+      </TaskLengthProvider>
+    </TasksContext.Provider>
+  );
 }
 
-function useTasksAPIContext() {
-  const context = useContext(TasksAPIContext)
+function useTasksContext() {
+  const context = useContext(TasksContext);
   if (context === undefined) {
-    console.error("TaskContext is used outside TaskProvider")
-    return;
-  }
-  return context;
-}
-function useTasksValueContext() {
-  const context = useContext(TasksValueContext)
-  if (context === undefined) {
-    console.error("TaskContext is used outside TaskProvider")
+    console.error("TaskContext is used outside TaskProvider");
     return;
   }
   return context;
 }
 
-
-export { TasksProvider, useTasksAPIContext, useTasksValueContext } 
+export { TasksProvider, useTasksContext };
