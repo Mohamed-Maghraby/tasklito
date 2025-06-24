@@ -114,7 +114,7 @@ function TasksProvider({ children }) {
 
   // const tasksValue = useMemo(() => {
   //   return { addTasks, deleteTask, editTask, completedToggle };
-  // }, []);
+  // },[addTasks, deleteTask, editTask, completedToggle]);
 
   const taskLength = tasks.length;
   return (
