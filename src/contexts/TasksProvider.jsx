@@ -3,35 +3,48 @@
  * Ex: createTask component consume the context to access addTask, when state updates in re-renders 
  * unnecessary, it should only re-renders when its local state changes or create a new task, 
  * but when filter options changes it re-renders.
- * Consider more state unrelated to tasks updated happen here it will cause waste renders.  
+ * Consider more states unrelated to tasks updated happen here it will cause waste renders.  
  * 
- * Updates: 
- * Created a separate context and provider for filter options, components that does nopt use the options
+ * Updates: Created a separate context and provider for filter options, components that does not use the options
  * provider won't get re-render. 
  * unnecessary re-renders for components like DisplayTasksCounts and createTasks, when fn like toggle or edit
  * gets executed, that's because the provider gets re-render and all consumers do so.
  * Even when provider got separated to values, and api that didn't solve the issue.
  * 
- * Goal: 
- * when any fn gets executed like toggle or edit, subscribed components that don't get effected should 
- * be optimized 
+ * Goal: when any fn gets executed like toggle or edit, subscribed components that don't get effected should be optimized 
+ * Result: can't be optimized with native technique
+
  * 
+ * conclusion: After analyzing the nature of the app I was able to conclude that the problem lies in two main things
  * 
- * the problem is when tasks changes from anywhere inside the context, it will a new object instance will
- * passed to provider {tasks, taskLength} {tasksApi}, causing the whole consumers to re-render, regardless
- * of consumers being memoized or you use callbacks or not, a new reference is created
+ * 1-tasks which are objects inside an array that gets changed frequently (high-velocity-data) any component consumes the "tasks" array will 
+ * get re-rendered when this array changes. That can be okay for small components that doesn't cause huge performance issue. For the 
+ * taskList component itself it can be a performance issue if the list that gets rendered is huge, and can be optimized using libraries
+ * like (react-window, react-virtualized, TanStack Virtual) to render-on-scroll (virtualizing technique) 
  * 
- * Final:
- * No improvement can be done, as long as the values you use depend on tasks which is an array gets changed
- * every time you make an action in the api, the consumers that depend pr even read the tasks will re-render
- * that happens because we try to implement a context for high-velocity-data i.e data changes frequently 
- * on every action, so the best solution here is to use something like context selector or zustand or any 
- * state management library that gets around that.
+ * 2-Component does not consume tasks directly they either consume context api (tasks functionality like add, edit, delete, etc..)
+ * or value derived from tasks array itself (length of array).
+ * To understand this we should look on how context-api look and some JS behaviors, remember we pass the value of the state to the
+ * context provider as an object ( <ContextName.Provider value={{state}}>), objects in JS are references i.e (when create and object it will 
+ * reference a memory address) review (primitive vs Reference Types) in JS, with this behavior in JS when component re-renders,
+ * a new object reference is created.
  * 
- * Context can be used to mange global state that doesn't change often (dark, them config, ect..), or when
+ * In our case the <ContextName.Provider value={{state}}> the value is an object when "tasks array" changes a new "value" object 
+ * reference is created and passed as prop to the provider causing the consumers component to re-render not because the state 
+ * changes but be cause we get a new object, that explains why components that only reads api fns like CreateTask component 
+ * (only read addTask method) gets re-rendered even if we split the context to values and api or memoized fns with 
+ * use memo and useCallback the "value" object itself will be a new instance every time context re-renders value={{thisTinyObject}}
+ * 
+ * This issue can be overcome by moving api fns outside the context, using lib like use-context-selector or (redux/zustand ).
+ * 
+ * Considering the second issue in which components that uses derived values like "tasks.length" will face the same issue, 
+ * as its gets computed from "tasks array" so it will get re-rendered when "tasks array changes 
+ * 
+ *Finally: Context can be used to mange global state that doesn't change often (dark, them config, ect..), or when
  * your states inside the context are not bound together i.e an object of states like a form inputs values
  * changing name won't affect country so in such an example you can improve context consumers with little 
  * tricks so they not re-render unnecessarily 
+ * 
  */
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { TaskLengthProvider } from "./TaskLengthProvider";
@@ -104,9 +117,12 @@ function TasksProvider({ children }) {
     );
   },[tasks])
 
-  const tasksApi = useMemo(()=>{
-    return {addTasks, deleteTask, editTask, completedToggle}
-  },[])
+  // const tasksApi = useMemo(()=>{
+  //   return {addTasks, deleteTask, editTask, completedToggle}
+  // },[])
+  const tasksApi = {addTasks, deleteTask, editTask, completedToggle}
+  
+
 
   const  taskLength = tasks.length
   return (

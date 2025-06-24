@@ -4,7 +4,7 @@ A to-do list web app using react.js
 
 ## Description
 
-A to-do list web app using react.js. Features includes CRUD operation on to-do's, filtering, modern UI, to-do's have categories, description and due-to, this project demonstrate my understanding on context api and managing global state, enhancing rendering performance.
+A to-do list web app using react.js. Features includes CRUD operation on to-do's, filtering, modern UI, to-do's have categories, description and due-to, this project demonstrate my understanding on context api, managing global state, and enhancing rendering performance.
 
 ![demo](./public/tasklito-demo.gif)
 
@@ -12,7 +12,11 @@ A to-do list web app using react.js. Features includes CRUD operation on to-do's
 
 ### Dependencies
 
-- node.js, vite, react.js, tailwindcss, lucide-react, react-datepicker
+- [Vite](https://vitejs.dev/) Lightning-fast dev server and bundler
+- [React](https://reactjs.org/) UI library for building components
+- [Tailwind CSS](https://tailwindcss.com/) Utility-first CSS framework
+- [Lucide React](https://lucide.dev/) Beautiful and consistent icon pack
+- [React Datepicker](https://reactdatepicker.com/) Customizable date picker component
 
 ## Installing
 
@@ -32,6 +36,18 @@ get's re-rendered. that introduced me to more advanced technique on how to rende
 the future. Also as this project grows advanced state management libraries can be used as (zustand, redux) or even react-context-selector.
 More about this is explained as a comment in src/context/TasksProvider.
 This project is simple as it seems but it has a huge benefits on understanding of react core concept, absolutely shifted me more steps forward
+
+## In Progress
+
+- Switch to use-context-selector,
+- Fix calender rendering issue when hover over days
+- Implementing a Virtualization technique for list rendering using react-window (not necessary)
+- Using a server-side & a database for storing to-do's instead of local storage (possibly IndexedDB)
+- Sidebar for edit tasks
+- WYSIWYG editor for task's description
+- sub-tasks
+- Image insertion support
+- Connecting to Notion
 
 ## License
 

@@ -35,6 +35,11 @@ function EditTask({ task, setIsVisible }) {
         setIsVisible(false);
     }
 
+      useEffect(() => {
+        console.log("EditTask render");
+      });
+    
+
     useEffect(() => {
         setUpdatedTask(task);
     }, [task]);
