@@ -1,5 +1,5 @@
 import { memo, useCallback, useMemo, useState } from "react";
-import { useTasksAPIContext } from "../contexts/TasksProvider";
+import { useTasksContext } from "../contexts/TasksProvider";
 import DateInput from "./DateInput";
 import { v4 as uuidv4 } from 'uuid';
 import useRender from '../hooks/useRender'
@@ -16,10 +16,10 @@ const init = {
 
 const CreateTask = memo(()=> {
 
-  const { tasksApi:{addTasks} } = useTasksAPIContext();
+  const { addTasks } = useTasksContext();
   const [newTask, setNewTask] = useState(init);
   // const addTasks = tasksApi.addTasks
-  useRender('create task', 'console')
+  useRender('CreateTask', 'console')
 
   function handleInputOnChange(e) {
     setNewTask({ ...newTask, [e.target.name]: e.target.value });
