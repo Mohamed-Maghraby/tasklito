@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Task from "./Task";
 import { useTasksContext } from "../contexts/TasksProvider";
 import { useTasksFiltersOptionContext } from "../contexts/TasksFiltersOptionProvider";
+
 function TaskList() {
-  const { tasks } = useTasksContext();
+
+  const  tasks = useTasksContext((state)=>state.tasks);
   const { tasksFilterOption } = useTasksFiltersOptionContext();
 
   useEffect(() => {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import  { useEffect, useState, useRef, useCallback } from "react";
 import { useTasksContext } from "../contexts/TasksProvider";
 import useOutsideClick from "../hooks/useOutsideClick ";
 import DateInput from "./DateInput";
@@ -8,7 +8,8 @@ import useRender from "../hooks/useRender";
 function EditTask({ task, setIsVisible }) {
     const [updatedTask, setUpdatedTask] = useState(task);
     const [isHovered, setIsHovered] = useState(false);
-    const { editTask } = useTasksContext();
+    const  editTask = useTasksContext((state)=>state.editTask);
+
     const editFormRef = useRef();
 
     useOutsideClick(editFormRef, () => setIsVisible(false));

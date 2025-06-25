@@ -16,9 +16,8 @@ const init = {
 
 const CreateTask = memo(()=> {
 
-  const { addTasks } = useTasksContext();
+  const  addTasks = useTasksContext((state)=>state.addTasks);
   const [newTask, setNewTask] = useState(init);
-  // const addTasks = tasksApi.addTasks
   useRender('CreateTask', 'console')
 
   function handleInputOnChange(e) {

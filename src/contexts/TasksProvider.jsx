@@ -46,8 +46,8 @@
  * tricks so they not re-render unnecessarily 
  * 
  */
-import { createContext,useCallback,useContext,useEffect,useMemo,useState } from "react";
-import { TaskLengthProvider } from "./TaskLengthProvider";
+import { useCallback,useEffect,useMemo,useState } from "react";
+import { createContext, useContextSelector } from "use-context-selector"; 
 const TasksContext = createContext();
 
 function TasksProvider({ children }) {
@@ -85,55 +85,52 @@ function TasksProvider({ children }) {
     }
   }, [tasks, loadedFromStorage]);
 
-  const addTasks = useCallback((task) => {
+  function addTasks (task) {
     if (!task.title) return;
     setTasks((prev) => [...prev, task]); //use updater function to avoid stale state
     console.log(task);
-  }, []);
+  }
+  // const addTasks = useCallback ((task) => {
+  //   if (!task.title) return;
+  //   setTasks((prev) => [...prev, task]); //use updater function to avoid stale state
+  //   console.log(task);
+  // },[tasks])  
 
-  const editTask = useCallback((updatedTask) => {
+  function editTask  (updatedTask) {
     setTasks((prev) =>
       prev.map((task) =>
         task.id === updatedTask.id ? { ...task, ...updatedTask } : task
       )
     );
     console.log(updatedTask);
-  }, []);
+  }
 
-  const deleteTask = useCallback(
-    (id) => {
-      setTasks((prev) => prev.filter((t) => t.id !== id));
-    },
-    [tasks]
-  );
-
-  const completedToggle = useCallback(
-    (task) => {
+  function deleteTask (id)  {
+    setTasks((prev) => prev.filter((t) => t.id !== id));
+  }
+  
+  function completedToggle (task)  {
       setTasks((prev) =>
         prev.map((t) =>
           t.id === task.id ? { ...t, completed: !t.completed } : t
         )
       );
-    },
-    [tasks]
-  );
+    }
 
-  // const tasksValue = useMemo(() => {
-  //   return { addTasks, deleteTask, editTask, completedToggle };
-  // },[addTasks, deleteTask, editTask, completedToggle]);
+  const tasksValue = useMemo(() => {
+    return { addTasks, deleteTask, editTask, completedToggle };
+  },[addTasks, deleteTask, editTask, completedToggle]);
 
   const taskLength = tasks.length;
   return (
-    <TasksContext.Provider value={{ tasks, addTasks, deleteTask, editTask, completedToggle }}>
-      <TaskLengthProvider taskLength={{ taskLength }}>
+    <TasksContext.Provider value={{ tasks, taskLength, ...tasksValue }}>
         {children}
-      </TaskLengthProvider>
     </TasksContext.Provider>
   );
 }
 
-function useTasksContext() {
-  const context = useContext(TasksContext);
+function useTasksContext(selector) {
+  const context = useContextSelector(TasksContext, selector);
   if (context === undefined) {
     console.error("TaskContext is used outside TaskProvider");
     return;

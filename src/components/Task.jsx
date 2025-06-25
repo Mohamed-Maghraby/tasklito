@@ -5,14 +5,16 @@
  * children, some time creating a component with local state and using conditional rendering is the best solution
  */
 
-import React, { memo, useEffect, useState } from "react";
+import  { memo, useEffect, useState } from "react";
 import { useTasksContext } from "../contexts/TasksProvider";
 import { Trash } from "lucide-react";
 import EditTask from "./EditTask";
 
 const Task = memo(({ task })=> {
   const { title, category, dueto, completed } = task;
-  const { deleteTask, completedToggle } = useTasksContext();
+
+  const  completedToggle = useTasksContext((state)=>state.completedToggle);
+  const  deleteTask  = useTasksContext((state)=>state.deleteTask);
   const [isHovered, setIsHovered] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
 
