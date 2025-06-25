@@ -5,8 +5,8 @@ import TasksFilter from '../components/TasksFilter'
 import DisplayTasksCounts from '../components/DisplayTasksCounts'
 
 /*context*/
-import { TasksProvider } from '../contexts/TasksProvider'
 import { TasksFiltersOptionProvider } from '../contexts/TasksFiltersOptionProvider'
+import React from 'react'
 
 function Home() {
   return (
@@ -14,14 +14,12 @@ function Home() {
       <div>
         <h1 className='m-0'>Welcome to <span className='text-emerald-500'>Tasklito</span></h1>
         <p className='mt-0 mb-2'>Organize your daily tasks with this amazing react-based to-do app</p>
-        <TasksProvider>
           <CreateTask></CreateTask>
           <DisplayTasksCounts></DisplayTasksCounts>
           <TasksFiltersOptionProvider>
             <TasksFilter></TasksFilter>
             <TaskList></TaskList>
           </TasksFiltersOptionProvider>
-        </TasksProvider>
       </div> 
     </div>
   )

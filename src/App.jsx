@@ -1,7 +1,11 @@
 import Home from "./pages/Home"
+import { TasksProvider } from './contexts/TasksProvider'
+
 function App() {
   return (
-    <Home></Home>
+    <TasksProvider>
+      <Home></Home>
+    </TasksProvider>
   )
 }
 export default App

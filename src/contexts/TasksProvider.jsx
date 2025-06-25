@@ -47,7 +47,9 @@
  * 
  */
 import { useCallback,useEffect,useMemo,useState } from "react";
-import { createContext, useContextSelector } from "use-context-selector"; 
+// import { createContext, useContextSelector } from "use-context-selector"; 
+import { createContext, useContextSelector } from './customContext';
+
 const TasksContext = createContext();
 
 function TasksProvider({ children }) {
@@ -117,17 +119,28 @@ function TasksProvider({ children }) {
       );
     }
 
-  const tasksValue = useMemo(() => {
-    return { addTasks, deleteTask, editTask, completedToggle };
-  },[addTasks, deleteTask, editTask, completedToggle]);
+  
+const value = useMemo(() => ({
+    tasks,
+    addTasks,
+    deleteTask,
+    editTask,
+    completedToggle,
+    taskLength: tasks.length,
+  }), [tasks, addTasks, deleteTask, editTask, completedToggle]);
 
-  const taskLength = tasks.length;
   return (
-    <TasksContext.Provider value={{ tasks, taskLength, ...tasksValue }}>
+    <TasksContext.Provider value={value}>
+      <Dummy/>
         {children}
     </TasksContext.Provider>
   );
 }
+
+const Dummy = () => {
+  console.log("👻 Dummy re-rendered");
+  return null;
+};
 
 function useTasksContext(selector) {
   const context = useContextSelector(TasksContext, selector);
