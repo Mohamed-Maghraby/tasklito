@@ -28,6 +28,7 @@ function EditTask({ task, setIsVisible }) {
     e.preventDefault();
     dispatch({ type: "EDIT_TASK", payload: updatedTask });
     setIsVisible(false);
+    dispatch({type: 'SAVE_TASKS'})
   }
 
   function handleClose() {

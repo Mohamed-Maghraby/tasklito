@@ -32,6 +32,8 @@ function CreateTask () {
       id: uuidv4(),
       dateCreated: new Date().toLocaleDateString(),
     });
+    dispatch({type: 'SAVE_TASKS'})
+
   }
 
   return (

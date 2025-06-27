@@ -3,7 +3,6 @@ import TaskList from "../components/TaskList";
 import CreateTask from "../components/CreateTask";
 import TasksFilter from "../components/TasksFilter";
 import DisplayTasksCounts from "../components/DisplayTasksCounts";
-import SaveTasks from "../components/SaveTasks";
 
 /*hooks*/
 import { useEffect } from "react";
@@ -20,7 +19,6 @@ function Home() {
         const parsedTasks = JSON.parse(localStorageTasks);
         //check the type of the tasks (must be array)
         if (Array.isArray(parsedTasks)) {
-          console.log("local get");
           dispatch({ type: "LOADING_SUCCESS", payload: parsedTasks });
         }
       } catch (error) {
@@ -39,7 +37,6 @@ function Home() {
         <p className="mt-0 mb-2">
           Organize your daily tasks with this amazing react-based to-do app
         </p>
-        <SaveTasks />
         <CreateTask></CreateTask>
         <DisplayTasksCounts></DisplayTasksCounts>
         <TasksFilter></TasksFilter>

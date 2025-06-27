@@ -38,10 +38,12 @@ const Task = memo(({ task }) => {
   function handleDelete() {
     setIsVisible(false);
     dispatch({ type: "DELETE_TASK", id: task.id });
+    dispatch({type: 'SAVE_TASKS'})
   }
 
   function handleCompletedToggle() {
     dispatch({ type: "TOGGLE_TASK", id: task.id });
+    dispatch({type: 'SAVE_TASKS'})
   }
   return (
     <div className="flex flex-col items-start min-w-100 border-1 px-5 py-2 my-4 border-black rounded-md">
