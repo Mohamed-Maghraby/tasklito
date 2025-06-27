@@ -1,27 +1,19 @@
 import { useEffect } from "react";
 import Task from "./Task";
-import { useTasksContext } from "../contexts/TasksProvider";
-import { useTasksFiltersOptionContext } from "../contexts/TasksFiltersOptionProvider";
+import { useTrackedState } from "../store";
 
 function TaskList() {
-
-  const  tasks = useTasksContext((state)=>state.tasks);
-  const { tasksFilterOption } = useTasksFiltersOptionContext();
+  const state = useTrackedState();
+  const tasks = state.tasks;
+  const filterOption = state.filterOption
 
   useEffect(() => {
-    console.log("task render")
-    console.log(tasks);;
+    console.log(tasks);
   });
 
   return (
     <div className="tasks h-110 overflow-y-auto bg-white rounded-md my-1">
-      {/* {
-        tasks.map((task, index) => {
-          return <Task task={task} key={index}></Task>
-        })
-      }  */}
-
-      {tasksFilterOption === "all" &&
+      {filterOption === "all" &&
         tasks
           .filter((t) => {
             return t;
@@ -29,7 +21,7 @@ function TaskList() {
           .map((t) => {
             return <Task task={t} key={t.id}></Task>;
           })}
-      {tasksFilterOption === "completed" &&
+      {filterOption === "completed" &&
         tasks
           .filter((t) => {
             return t.completed;
@@ -37,7 +29,7 @@ function TaskList() {
           .map((t) => {
             return <Task task={t} key={t.id}></Task>;
           })}
-      {tasksFilterOption === "non_completed" &&
+      {filterOption === "non_completed" &&
         tasks
           .filter((t) => {
             return !t.completed;
@@ -45,6 +37,7 @@ function TaskList() {
           .map((t) => {
             return <Task task={t} key={t.id}></Task>;
           })}
+      {state.pending && <p>Loading...</p>}
     </div>
   );
 }

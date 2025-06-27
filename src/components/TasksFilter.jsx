@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
-import { useTasksFiltersOptionContext } from '../contexts/TasksFiltersOptionProvider';
+import { useDispatch } from '../store';
 
 function TasksFilter() {
-    const { filterTasks } = useTasksFiltersOptionContext()
+    const dispatch = useDispatch()
 
     const [option, setOption] = useState('all')
     useEffect(()=>{
-        filterTasks(option)
+        dispatch({type: 'FILTER_TASKS', payload: option})
     }, [option])
   return (
     <div className='my-2 flex flex-col items-start'>

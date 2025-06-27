@@ -1,4 +1,8 @@
-import React, { useState } from 'react';
+/**
+ * This component intended to be an abstraction layer for both EditTask and CreateTask since they share similar functionality and behavior
+ */
+
+
 import uniqid from 'uniqid';
 
 function TaskForm({ initialTask, onSubmit, type, children }) {
@@ -8,13 +12,13 @@ function TaskForm({ initialTask, onSubmit, type, children }) {
     const [task, setTask] = useState({
         id: initialTask?.id || uniqid(),
         title: initialTask?.title || '',
-        describtion: initialTask?.describtion || '',
+        description: initialTask?.description || '',
         dateCreated: initialTask?.dateCreated || Date.now(),
         category: initialTask?.category || '',
     });
 
     function handleChange(e) {
-        //e.target is an object can be destructuered, dynamically update state based on input name att
+        //e.target is an object can be destructured, dynamically update state based on input name att
         const { name, value } = e.target;
         setTask((prev) => ({ ...prev, [name]: value }));
     }
@@ -27,7 +31,7 @@ function TaskForm({ initialTask, onSubmit, type, children }) {
             setTask({
                 id: uniqid(),
                 title: '',
-                describtion: '',
+                description: '',
                 dateCreated:Date.now(),
                 category: '',
             });
@@ -47,8 +51,8 @@ function TaskForm({ initialTask, onSubmit, type, children }) {
                         placeholder="Title"
                     />
                     <input
-                        name="describtion"
-                        value={task.describtion}
+                        name="description"
+                        value={task.description}
                         onChange={handleChange}
                         placeholder="Description"
                     />

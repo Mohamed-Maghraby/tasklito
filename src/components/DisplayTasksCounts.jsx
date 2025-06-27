@@ -1,23 +1,17 @@
-import useRender from "../hooks/useRender";
-import { useTasksContext } from "../contexts/TasksProvider";
 import { memo } from "react";
+import { useTrackedState } from "../store";
 
 const DisplayTasksCounts = memo(() => {
-    const  taskLength = useTasksContext((state)=>state.taskLength);
+  const state = useTrackedState();
+  const taskLength = state.tasks.length;
 
-  useRender("DisplayTasksCounts", "console");
   return (
-    <div className="text-xs text-neutral-700 font-semibold">
-      You got {taskLength} tasks
-    </div>
+    !state.pending && (
+      <span className="text-xs text-neutral-700 font-semibold">
+        You got {taskLength} tasks
+      </span>
+    )
   );
 });
-// function DisplayTasksCounts() {
-//     const {taskLengthOPT} = useTasksContext()
-//     useRender('DisplayTasksCounts', 'console')
-//   return (
-//     <div className='text-sm text-neutral-700 font-bold'>You got {taskLengthOPT()}</div>
-//   )
-// }
 
 export default DisplayTasksCounts;

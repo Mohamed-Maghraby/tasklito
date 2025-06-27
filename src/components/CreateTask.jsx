@@ -1,8 +1,7 @@
-import { memo, useCallback, useMemo, useState } from "react";
-import { useTasksContext } from "../contexts/TasksProvider";
+import React, { memo, useCallback, useMemo, useState } from "react";
 import DateInput from "./DateInput";
-import { v4 as uuidv4 } from 'uuid';
-import useRender from '../hooks/useRender'
+import { v4 as uuidv4 } from "uuid";
+import { useDispatch } from "../store";
 
 const init = {
   id: uuidv4(),
@@ -14,11 +13,9 @@ const init = {
   completed: false,
 };
 
-const CreateTask = memo(()=> {
-
-  const  addTasks = useTasksContext((state)=>state.addTasks);
+function CreateTask () {
+  const dispatch = useDispatch();
   const [newTask, setNewTask] = useState(init);
-  useRender('CreateTask', 'console')
 
   function handleInputOnChange(e) {
     setNewTask({ ...newTask, [e.target.name]: e.target.value });
@@ -29,14 +26,13 @@ const CreateTask = memo(()=> {
 
   function handelSubmit(e) {
     e.preventDefault();
-    addTasks(newTask);
+    dispatch({ type: "ADD_TASK", payload: newTask });
     setNewTask({
       ...init,
       id: uuidv4(),
       dateCreated: new Date().toLocaleDateString(),
     });
   }
-
 
   return (
     <form onSubmit={handelSubmit} className="create-from">
@@ -61,10 +57,16 @@ const CreateTask = memo(()=> {
         onChange={handleInputOnChange}
         placeholder="category"
       />
-      <DateInput dueto={newTask.dueto} onChange={handleDateOnChange} inputClass="input-primary"></DateInput>
-      <button type="submit" className="button-primary">Done</button>
+      <DateInput
+        dueto={newTask.dueto}
+        onChange={handleDateOnChange}
+        inputClass="input-primary"
+      ></DateInput>
+      <button type="submit" className="button-primary">
+        Done
+      </button>
     </form>
   );
-})
+};
 
 export default CreateTask;

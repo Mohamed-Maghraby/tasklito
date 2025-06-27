@@ -1,11 +1,11 @@
-import Home from "./pages/Home"
-import { TasksProvider } from './contexts/TasksProvider'
+import Home from "./pages/Home";
+import { Provider } from "./store";
 
 function App() {
   return (
-    <TasksProvider>
+    <Provider>
       <Home></Home>
-    </TasksProvider>
-  )
+    </Provider>
+  );
 }
-export default App
+export default App;
