@@ -17,6 +17,7 @@ A to-do list web app using react.js. Features includes CRUD operation on to-do's
 - [Tailwind CSS](https://tailwindcss.com/) Utility-first CSS framework
 - [Lucide React](https://lucide.dev/) Beautiful and consistent icon pack
 - [React Datepicker](https://reactdatepicker.com/) Customizable date picker component
+- [react-tracked](https://react-tracked.js.org//) state management library
 
 ## Installing
 
@@ -34,12 +35,12 @@ This project helped me to understand how global state work and the performance e
 inside a state array in context. This context has a provider for consumer component, and since its and array all components consumes this context
 get's re-rendered. that introduced me to more advanced technique on how to render tasks as user scroll, which is a feature to be implemented in
 the future. Also as this project grows advanced state management libraries can be used as (zustand, redux) or even react-context-selector.
-More about this is explained as a comment in src/context/TasksProvider.
+More about this is explained as a comment in src/context/TasksProvider in the context branch.
 This project is simple as it seems but it has a huge benefits on understanding of react core concept, absolutely shifted me more steps forward
 
 ## In Progress
 
-- Switch to use-context-selector,
+- Switch to a state management library,
 - Fix calender rendering issue when hover over days
 - Implementing a Virtualization technique for list rendering using react-window (not necessary)
 - Using a server-side & a database for storing to-do's instead of local storage (possibly IndexedDB)

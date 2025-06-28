@@ -16,7 +16,7 @@ const init = {
 function CreateTask () {
   const dispatch = useDispatch();
   const [newTask, setNewTask] = useState(init);
-
+  
   function handleInputOnChange(e) {
     setNewTask({ ...newTask, [e.target.name]: e.target.value });
   }
