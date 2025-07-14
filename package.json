@@ -1,5 +1,6 @@
 {
   "name": "tasklito",
+  "homepage": "https://Mohamed-Maghraby.github.io/tasklito",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -8,10 +9,13 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "server": "json-server --watch data/tasks.json --port 9000"
+    "server": "json-server --watch data/tasks.json --port 9000",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.6",
+    "gh-pages": "^6.3.0",
     "json-server": "^1.0.0-beta.3",
     "lucide-react": "^0.510.0",
     "react": "^19.0.0",
